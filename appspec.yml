@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+  - myLambdaFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "pallas-express-lambda-function"
+        Alias: "pallas-express-lambda-function"
+        CurrentVersion: "1"
+        TargetVersion: "2"
