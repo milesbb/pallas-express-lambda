@@ -8,6 +8,8 @@
     "clear_jest": "jest --clearCache"
   },
   "devDependencies": {
+    "@types/aws-serverless-express": "^3.3.5",
+    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.1",
     "cross-env": "^7.0.3",
@@ -15,10 +17,20 @@
     "nodemon": "^2.0.22",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-merge": "^5.8.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.328.0",
+    "@aws-sdk/client-s3": "^3.328.0",
+    "@aws-sdk/client-sqs": "^3.328.0",
+    "@aws-sdk/client-ssm": "^3.328.0",
+    "aws-serverless-express": "^3.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"

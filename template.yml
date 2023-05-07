@@ -1,61 +1,49 @@
-Parameters:
-  Tag:
-    Type: String
-  LambdaS3Bucket:
-    Type: String
-  LambdaS3Key:
-    Type: String
-  LambdaName:
-    Type: String
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
 
 Resources:
+  AppGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: 'Pallas-Api-AppGateway'
+      EndpointConfiguration: REGIONAL
+      StageName: api
+      Cors:
+        AllowMethods: "'GET,PUT,POST,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date'"
+        AllowCredentials: "'true'"
+      GatewayResponses:
+        Default:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Method: "'GET,PUT,POST,DELETE,OPTIONS'"
+              Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date'"
+              Access-Control-Allow-Origin: "'https://milesbb.tech'"
+  
   AppLogGroup:
     Type: "AWS::Logs::LogGroup"
     DeletionPolicy: Retain
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${LambdaName}"
+      LogGroupName: "/aws/lambda/PallasLambda"
 
-  IamRoleLambdaExecution:
-    Type: "AWS::IAM::Role"
-    DeletionPolicy: Retain
+  PallasExpressFunction:
+    Type: AWS::Serverless::Function
+    DeletionPolicy: Delete
     Properties:
-      Path: "/"
-      RoleName: !Sub "${LambdaName}-role"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service:
-                - "lambda.amazonaws.com"
-            Action: "sts:AssumeRole"
-      ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-      Policies:
-        - PolicyName: !Sub "${LambdaName}-policy"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "logs:CreateLogStream"
-                  - "logs:CreateLogGroup"
-                  - "logs:PutLogEvents"
-                Resource:
-                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaName}*:*"
-
-  MyLambda:
-    Type: "AWS::Lambda::Function"
-    DeletionPolicy: Retain
-    Properties:
-      Code:
-        S3Bucket: !Ref "LambdaS3Bucket"
-        S3Key: !Ref "LambdaS3Key"
-      Description: "My Lambda"
-      FunctionName: !Ref "LambdaName"
-      Handler: "not.used.in.provided.runtime"
+      CodeUri: server.js
+      Runtime: nodejs14.x
+      Description: "PallasLambda"
+      FunctionName: "PallasLambda"
+      Handler: dist/universal/lamb
       MemorySize: 256
       PackageType: "Zip"
-      Role: !GetAtt "IamRoleLambdaExecution.Arn"
+      Role: arn:aws:iam::442090781375:role/api-lambda-role
       Runtime: "provided"
       Timeout: 30
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AppGateway
+            Path: /api
+            Method: ANY
