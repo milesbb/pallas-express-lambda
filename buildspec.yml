@@ -19,7 +19,7 @@ phases:
       - npm prune --production
   post_build:
     commands:
-      - zip -r application.zip .
+      - zip -r application.zip ./src
       - echo Build completed on `date`
 artifacts:
   files:

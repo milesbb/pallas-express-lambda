@@ -34,7 +34,7 @@ Resources:
       Runtime: nodejs14.x
       Description: "PallasLambda"
       FunctionName: "PallasLambda"
-      Handler: dist/universal/lambda
+      Handler: dist/pallas_lambda
       MemorySize: 256
       PackageType: "Zip"
       Role: arn:aws:iam::442090781375:role/api-lambda-role
