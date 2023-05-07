@@ -24,6 +24,7 @@ Resources:
     Type: "AWS::Logs::LogGroup"
     DeletionPolicy: Retain
     Properties:
+      Role: arn:aws:iam::442090781375:role/cloudformation-log-role
       LogGroupName: "/aws/lambda/PallasLambda"
 
   PallasExpressFunction:
