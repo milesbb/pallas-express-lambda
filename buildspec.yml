@@ -22,6 +22,7 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
+    - template.yml
     - dist/**/*
     - package.json
     - package-lock.json
