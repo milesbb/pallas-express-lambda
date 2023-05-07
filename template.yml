@@ -30,7 +30,7 @@ Resources:
     Type: AWS::Serverless::Function
     DeletionPolicy: Delete
     Properties:
-      CodeUri: application.zip
+      CodeUri: BuildOutputArtifacts::application.zip
       Runtime: nodejs14.x
       Description: "PallasLambda"
       FunctionName: "PallasLambda"
