@@ -8,51 +8,54 @@ Parameters:
   LambdaName:
     Type: String
 
-Resources: 
+Resources:
   AppLogGroup:
     Type: "AWS::Logs::LogGroup"
+    DeletionPolicy: Retain
     Properties:
       LogGroupName: !Sub "/aws/lambda/${LambdaName}"
 
   IamRoleLambdaExecution:
     Type: "AWS::IAM::Role"
+    DeletionPolicy: Retain
     Properties:
       Path: "/"
-      RoleName: !Sub "${LambdaName}-role"  
+      RoleName: !Sub "${LambdaName}-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-        - Effect: "Allow"
-          Principal:
-            Service:
-            - "lambda.amazonaws.com"
-          Action: "sts:AssumeRole"
-      ManagedPolicyArns: 
-      - "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-      Policies:
-      - PolicyName: !Sub "${LambdaName}-policy"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
           - Effect: "Allow"
-            Action:
-            - "logs:CreateLogStream"
-            - "logs:CreateLogGroup"
-            - "logs:PutLogEvents"
-            Resource:
-            - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaName}*:*"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+      Policies:
+        - PolicyName: !Sub "${LambdaName}-policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${LambdaName}*:*"
 
   MyLambda:
     Type: "AWS::Lambda::Function"
+    DeletionPolicy: Retain
     Properties:
-        Code:
-          S3Bucket: !Ref "LambdaS3Bucket"
-          S3Key: !Ref "LambdaS3Key"
-        Description: "My Lambda"
-        FunctionName: !Ref "LambdaName"
-        Handler: "not.used.in.provided.runtime"
-        MemorySize: 256
-        PackageType: "Zip"
-        Role: !GetAtt "IamRoleLambdaExecution.Arn"
-        Runtime: "provided"
-        Timeout: 30
+      Code:
+        S3Bucket: !Ref "LambdaS3Bucket"
+        S3Key: !Ref "LambdaS3Key"
+      Description: "My Lambda"
+      FunctionName: !Ref "LambdaName"
+      Handler: "not.used.in.provided.runtime"
+      MemorySize: 256
+      PackageType: "Zip"
+      Role: !GetAtt "IamRoleLambdaExecution.Arn"
+      Runtime: "provided"
+      Timeout: 30
