@@ -19,7 +19,7 @@ phases:
       - npm prune --production
   post_build:
     commands:
-      - zip -qr application.zip dist/universal/lambda.js src/resource
+      - zip -r application.zip .
       - echo Build completed on `date`
 artifacts:
   files:
