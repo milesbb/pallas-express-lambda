@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    lambda: "./pallas_lambda.ts",
+    lambda: "./src/pallas_lambda.ts",
   },
   externals: [],
   module: {
